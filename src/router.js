@@ -5,6 +5,8 @@ import users from './modules/users/routes'
 import addresses from './modules/addresses/routes'
 import login from './modules/login/routes'
 import store from './store/store'
+import { get as localStorageGetItem } from './utils/local'
+import axios from 'axios'
 
 Vue.use(Router)
 
@@ -16,10 +18,16 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-    if (to.name !== 'login.index' && store.state.token === '') {
-        next({ name: 'login.index' })
+    const localItem = localStorageGetItem('token')
+    if (localItem !== undefined && localItem !== '' && localItem.token !== '') {
+        axios.defaults.headers.common['Authorization'] = `Bearer: ${localItem.token}`
+        next()
+    } else {
+        if (to.name !== 'login.index' && store.state.token === '') {
+            next({ name: 'login.index' })
+        }
+        next()
     }
-    next()
 })
 
 export default router

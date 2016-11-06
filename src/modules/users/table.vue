@@ -61,12 +61,15 @@
                 return moment(date).format('DD/MM/YYYY')
             },
             edit (user) {
-                this.$bus.$emit('open-form', { user: user })
+                this.$router.push({ name: 'users.edit', params: { id: user.id } })
             },
             remove (id) {
                 const confirm = window.confirm('Tem certeza?!')
                 if (confirm) {
-                    window.location = `usuarios/remover/${id}`
+                    this.$http.delete(`usuarios/remover/${id}`).then(res => {
+                        this.$store.commit('USERS_REMOVE_USER', { id: id })
+                        this.$bus.$emit('set-success-msg', { msg: res.data.message })
+                    })
                 }
             },
         },

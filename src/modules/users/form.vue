@@ -14,6 +14,15 @@
             }
         },
         methods: {
+            getUser () {
+                const userid = this.$route.params.id
+                if (userid !== undefined) {
+                    this.$http.get(`usuarios/${userid}`).then(res => {
+                        this.user = res.data.user
+                        this.isEditing = true
+                    })
+                }
+            },
             submit () {
                 this.$http.post(this.action, this.user).then(res => {
                     jQuery(this.$refs.modal).modal('hide')
@@ -27,6 +36,7 @@
                 this.user.name = ''
                 this.user.email = ''
                 this.user.password = ''
+                this.user.id = 0
             },
         },
         computed: {
@@ -39,20 +49,13 @@
             },
         },
         mounted () {
+            this.getUser()
+
             const modal = jQuery(this.$refs.modal)
             modal.modal('show')
-            // this.$bus.$on('open-form', (obj) => {
-            //     if (obj !== undefined) {
-            //         this.user = obj.user
-            //         this.isEditing = true
-            //     }
-            //     modal.modal('show')
-            // })
             modal.on('hidden.bs.modal', () => {
-                this.user.id = 0
-                this.user.name = ''
-                this.user.email = ''
-                this.user.password = ''
+                this.reset()
+                this.$router.push({ name: 'users.index' })
             })
         },
     }

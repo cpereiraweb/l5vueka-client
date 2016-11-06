@@ -3,8 +3,8 @@
     export default {
         data () {
             return {
-                email: '',
-                password: '',
+                email: 'vedovelli@gmail.com',
+                password: '123456',
             }
         },
         methods: {
@@ -14,11 +14,12 @@
             handleLoginResult (res) {
                 this.reset()
                 this.$store.commit('SET_TOKEN', { token: res.data.token })
+                this.$store.commit('SET_USER', { user: res.data.user })
                 this.$router.push({ name:  'dashboard.index' })
             },
             reset () {
-                this.email = ''
-                this.password = ''
+                // this.email = ''
+                // this.password = ''
             },
         },
     }
